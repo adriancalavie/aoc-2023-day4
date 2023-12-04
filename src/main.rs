@@ -68,15 +68,22 @@ fn main() {
     let path = "res/data.txt";
     // let path = "res/data_light.txt";
     let lines = get_input(path);
-    let mut sum = 0;
+    // let mut sum = 0;
+    let cards: Vec<Card> = lines.iter().map(|line| Card::from_string(line)).collect();
+    let mut multiplicity = vec![1; cards.len()];
 
-    for line in lines {
-        println!("{}", line);
-        let card = Card::from_string(&line);
-        sum += card.get_value();
+    for (idx, card) in cards.iter().enumerate() {
+        let won_numbers = card.count_won_numbers();
 
-        println!("Sum: {}", sum);
+        for _ in 0..multiplicity[idx] {
+            ((idx + 1)..(idx + 1 + won_numbers)).for_each(|i| {
+                if i != lines.len() {
+                    multiplicity[i] += 1;
+                }
+            });
+        }
     }
-
+    //let sum = a.iter().fold(0, |acc, x| acc + x);
+    println!("{}", multiplicity.iter().sum::<i32>())
     // println!("Sum: {}", sum);
 }
